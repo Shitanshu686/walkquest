@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WalkQuest AI — Touch Grass</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, #173b2b 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #173525 0%, transparent 30%),
+                #07110c;
+            color: #f2f8f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border: 1px solid #2c5c43;
+            border-radius: 999px;
+            background: rgba(22, 57, 40, 0.55);
+            color: #a9e6bd;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: clamp(42px, 8vw, 76px);
+            line-height: 0.95;
+            letter-spacing: -4px;
+            margin-bottom: 18px;
+        }
+
+        h1 span {
+            color: #79d99a;
+        }
+
+        .tagline {
+            color: #a8b9ae;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .progress-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 45px;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 18px;
+            padding: 18px 24px;
+            border: 1px solid #254634;
+            border-radius: 20px;
+            background: rgba(10, 27, 17, 0.75);
+        }
+
+        .progress-item {
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .progress-number {
+            color: #79d99a;
+            font-size: 26px;
+            font-weight: 900;
+        }
+
+        .progress-label {
+            margin-top: 4px;
+            color: #789082;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .progress-divider {
+            width: 1px;
+            height: 38px;
+            background: #294b38;
+        }
+
+        .panel {
+            background: rgba(13, 29, 20, 0.88);
+            border: 1px solid #254634;
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        label {
+            display: block;
+            color: #d8e8dc;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            resize: vertical;
+            border: 1px solid #31553f;
+            border-radius: 18px;
+            background: #09150e;
+            color: #f3faf5;
+            padding: 18px;
+            font-size: 17px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #79d99a;
+            box-shadow: 0 0 0 3px rgba(121, 217, 154, 0.10);
+        }
+
+        textarea::placeholder {
+            color: #667b6d;
+        }
+
+        .examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .example {
+            border: 1px solid #294b38;
+            background: #0b1b12;
+            color: #9eb5a5;
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .example:hover {
+            color: #d9f5e1;
+            border-color: #4e8b63;
+        }
+
+        button.generate {
+            width: 100%;
+            margin-top: 20px;
+            border: 0;
+            border-radius: 16px;
+            padding: 16px 20px;
+            background: #79d99a;
+            color: #061009;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button.generate:hover {
+            transform: translateY(-2px);
+            background: #91e5aa;
+        }
+
+        button.generate:disabled {
+            opacity: 0.6;
+            cursor: wait;
+            transform: none;
+        }
+
+        .quest {
+            display: none;
+            margin-top: 24px;
+            border: 1px solid #31583f;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #0a1910;
+        }
+
+        .quest-header {
+            padding: 24px;
+            background: linear-gradient(
+                135deg,
+                #173b28,
+                #0c2115
+            );
+            border-bottom: 1px solid #31583f;
+        }
+
+        .quest-label {
+            color: #86d99f;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .quest-title {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .duration {
+            color: #a8bdaf;
+            font-size: 14px;
+        }
+
+        .activities {
+            padding: 10px 24px 24px;
+        }
+
+        .activity {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 20px 0;
+            border-bottom: 1px solid #203a2a;
+        }
+
+        .activity:last-child {
+            border-bottom: 0;
+        }
+
+        .number {
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #183b28;
+            color: #83dda0;
+            font-weight: 800;
+        }
+
+        .activity-text {
+            color: #dce9df;
+            font-size: 16px;
+            line-height: 1.55;
+            padding-top: 7px;
+        }
+
+        .escape {
+            margin: 0 24px 24px;
+            padding: 24px;
+            border-radius: 20px;
+            background: #79d99a;
+            color: #061009;
+            text-align: center;
+        }
+
+        .escape-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .escape-text {
+            font-size: 14px;
+            opacity: 0.75;
+        }
+
+        .error {
+            display: none;
+            margin-top: 14px;
+            padding: 14px;
+            border-radius: 12px;
+            background: #321616;
+            border: 1px solid #713737;
+            color: #ffb6b6;
+            font-size: 14px;
+        }
+
+        .start-quest {
+            margin-top: 18px;
+            border: 2px solid #061009;
+            border-radius: 12px;
+            padding: 12px 22px;
+            background: #061009;
+            color: #79d99a;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .start-quest:hover {
+            transform: translateY(-1px);
+        }
+
+        .complete {
+            display: none;
+            margin: 0 24px 24px;
+            padding: 30px 24px;
+            border-radius: 20px;
+            background: #173b28;
+            border: 1px solid #427956;
+            text-align: center;
+        }
+
+        .complete-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .complete-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .complete-text {
+            color: #a9c1b0;
+            margin-bottom: 20px;
+        }
+
+        .finish-button {
+            border: 0;
+            border-radius: 12px;
+            padding: 13px 24px;
+            background: #79d99a;
+            color: #061009;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .outside-mode {
+            display: none;
+            min-height: 420px;
+            padding: 50px 24px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #061009;
+        }
+
+        .outside-leaf {
+            font-size: 58px;
+            margin-bottom: 18px;
+        }
+
+        .outside-label {
+            color: #79d99a;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .outside-title {
+            font-size: clamp(30px, 6vw, 48px);
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 14px;
+        }
+
+        .outside-text {
+            color: #9fb5a7;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 26px;
+        }
+
+        .outside-timer {
+            color: #79d99a;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 28px;
+        }
+
+        .outside-back {
+            border: 0;
+            border-radius: 14px;
+            padding: 14px 24px;
+            background: #79d99a;
+            color: #061009;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .outside-back:hover {
+            transform: translateY(-2px);
+        }
+
+        .outside-screen {
+            background: #061009;
+        }
+
+        .outside-active .quest-header,
+        .outside-active .activities {
+            display: none;
+        }
+
+        .outside-active {
+            border: 0;
+            background: #061009;
+        }
+
+        .reflection-title {
+            margin-top: 22px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .mood-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mood-buttons button {
+            border: 1px solid #4b7959;
+            border-radius: 999px;
+            padding: 10px 14px;
+            background: #0d2417;
+            color: #d9eee0;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .mood-buttons button:hover {
+            background: #214d32;
+        }
+
+        .stats {
+            margin-top: 18px;
+            color: #9fc2aa;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #607267;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+
+            .progress-card {
+                gap: 20px;
+                padding: 15px 10px;
+            }
+
+            .progress-item {
+                min-width: 120px;
+            }
+
+
+            body {
+                padding: 14px;
+                align-items: flex-start;
+            }
+
+            .hero {
+                margin-top: 25px;
+            }
+
+            .panel {
+                padding: 18px;
+                border-radius: 22px;
+            }
+
+            h1 {
+                letter-spacing: -2px;
+            }
+
+            .quest-title {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <section class="hero">
+
+        <div class="logo">
+            🌿 WALKQUEST AI
+        </div>
+
+        <h1>
+            Touch <span>Grass.</span>
+        </h1>
+
+        <p class="tagline">
+            AI that plans your escape from the screen.
+        </p>
+
+    </section>
+
+
+    <section class="progress-card" id="progressCard">
+
+        <div class="progress-item">
+            <div class="progress-number" id="questCount">0</div>
+            <div class="progress-label">QUESTS COMPLETED</div>
+        </div>
+
+        <div class="progress-divider"></div>
+
+        <div class="progress-item">
+            <div class="progress-number" id="outsideMinutes">0</div>
+            <div class="progress-label">MINUTES OUTSIDE</div>
+        </div>
+
+    </section>
+
+
+    <section class="panel">
+
+        <label for="request">
+            What do you need right now?
+        </label>
+
+        <textarea
+            id="request"
+            placeholder="Example: Mere paas 30 minute hain, mood fresh karna hai..."
+        ></textarea>
+
+        <div class="examples">
+
+            <button
+                class="example"
+                onclick="useExample('Mere paas 20 minute hain, mind fresh karna hai')">
+                🌱 20 min fresh air
+            </button>
+
+            <button
+                class="example"
+                onclick="useExample('Thoda stressed hoon, bahar jaakar relax karna hai')">
+                🧘 Stress reset
+            </button>
+
+            <button
+                class="example"
+                onclick="useExample('Mera mood boring hai, kuch outdoor fun karna hai')">
+                ☀️ Beat boredom
+            </button>
+
+        </div>
+
+
+        <button
+            class="generate"
+            id="generateBtn"
+            onclick="generateQuest()">
+
+            Generate My Quest →
+
+        </button>
+
+        <div class="error" id="error"></div>
+
+
+        <div class="quest" id="quest">
+
+            <div class="quest-header">
+
+                <div class="quest-label">
+                    Your mission
+                </div>
+
+                <div class="quest-title" id="questTitle">
+                    Fresh Air Quest
+                </div>
+
+                <div class="duration" id="duration">
+                    ⏱ 20 minutes
+                </div>
+
+            </div>
+
+
+            <div class="activities" id="activities">
+            </div>
+
+
+            <div class="escape" id="escape">
+
+                <div class="escape-title">
+                    📵 PHONE POCKET
+                </div>
+
+                <div class="escape-text">
+                    Screen off. Door open. Quest starts now.
+                </div>
+
+                <button class="start-quest" onclick="startQuest()">
+                    🚀 START QUEST
+                </button>
+
+            </div>
+
+            <div class="outside-mode" id="outsideMode">
+
+                <div class="outside-leaf">
+                    🌿
+                </div>
+
+                <div class="outside-label">
+                    QUEST STARTED
+                </div>
+
+                <div class="outside-title">
+                    Put your phone away.
+                </div>
+
+                <div class="outside-text">
+                    Go outside.<br>
+                    Your quest is waiting.
+                </div>
+
+                <div class="outside-timer" id="outsideTimer">
+                    ⏱ 30:00 planned
+                </div>
+
+                <button
+                    class="outside-back"
+                    onclick="finishQuest()">
+                    ✅ I'M BACK
+                </button>
+
+            </div>
+
+
+            <div class="complete" id="complete">
+
+                <div class="complete-icon">
+                    🌿
+                </div>
+
+                <div class="complete-title">
+                    You touched grass.
+                </div>
+
+                <div class="complete-text">
+                    Screen time down. Outside time up.
+                </div>
+
+                <button class="finish-button" onclick="finishQuest()">
+                    ✅ I'M BACK
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <div class="footer">
+        Powered by local open-weight AI · Gemma 3:1B · Built for Touch Grass
+    </div>
+
+</div>
+
+
+<script>
+
+    function loadProgress() {
+
+        const completed =
+            Number(localStorage.getItem("walkquestCompleted") || 0);
+
+        const minutes =
+            Number(localStorage.getItem("walkquestMinutes") || 0);
+
+        document.getElementById("questCount")
+            .textContent = completed;
+
+        document.getElementById("outsideMinutes")
+            .textContent = minutes;
+    }
+
+
+    function useExample(text) {
+        document.getElementById("request").value = text;
+    }
+
+
+    let currentQuestDuration = 20;
+
+    async function generateQuest() {
+
+        const request =
+            document.getElementById("request").value.trim();
+
+        const button =
+            document.getElementById("generateBtn");
+
+        const quest =
+            document.getElementById("quest");
+
+        const error =
+            document.getElementById("error");
+
+
+        error.style.display = "none";
+
+
+        if (!request) {
+
+            error.textContent =
+                "Pehle batao tumhe kis type ka outdoor quest chahiye.";
+
+            error.style.display = "block";
+
+            return;
+        }
+
+
+        button.disabled = true;
+
+        button.textContent = "Creating your escape...";
+
+
+        try {
+
+            const response = await fetch("/api/quest", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    request: request
+                })
+
+            });
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Quest API returned " + response.status
+                );
+
+            }
+
+
+            const data = await response.json();
+
+
+            document.getElementById("questTitle")
+                .textContent = data.title;
+
+
+            currentQuestDuration = data.duration;
+
+            document.getElementById("duration")
+                .textContent = "⏱ " + data.duration + " minutes";
+
+
+            const activities =
+                document.getElementById("activities");
+
+
+            activities.innerHTML = "";
+
+
+            data.activities.forEach(
+                (activity, index) => {
+
+                    const item =
+                        document.createElement("div");
+
+                    item.className = "activity";
+
+
+                    item.innerHTML = `
+                        <div class="number">
+                            ${index + 1}
+                        </div>
+
+                        <div class="activity-text">
+                            ${escapeHtml(activity)}
+                        </div>
+                    `;
+
+
+                    activities.appendChild(item);
+
+                }
+            );
+
+
+            quest.style.display = "block";
+
+
+            quest.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+
+        } catch (err) {
+
+            error.textContent =
+                "Quest generate nahi ho paya. Check karo ki WalkQuest server aur Ollama dono running hain.";
+
+            error.style.display = "block";
+
+            console.error(err);
+
+        } finally {
+
+            button.disabled = false;
+
+            button.textContent =
+                "Generate My Quest →";
+
+        }
+
+    }
+
+
+    function startQuest() {
+
+        const escape =
+            document.getElementById("escape");
+
+        const outsideMode =
+            document.getElementById("outsideMode");
+
+        const quest =
+            document.getElementById("quest");
+
+        escape.style.display = "none";
+
+        quest.classList.add("outside-active");
+
+        outsideMode.style.display = "flex";
+
+        document.body.classList.add("outside-screen");
+
+        let remaining =
+            currentQuestDuration * 60;
+
+        const timer =
+            document.getElementById("outsideTimer");
+
+        const interval =
+            setInterval(() => {
+
+                if (remaining <= 0) {
+
+                    clearInterval(interval);
+
+                    timer.textContent =
+                        "🌿 Quest time complete";
+
+                    return;
+                }
+
+                const minutes =
+                    Math.floor(remaining / 60);
+
+                const seconds =
+                    remaining % 60;
+
+                timer.textContent =
+                    "⏱ " +
+                    String(minutes).padStart(2, "0") +
+                    ":" +
+                    String(seconds).padStart(2, "0");
+
+                remaining--;
+
+            }, 1000);
+
+        window.walkQuestTimer = interval;
+
+        outsideMode.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+
+    function finishQuest() {
+
+        if (window.walkQuestTimer) {
+            clearInterval(window.walkQuestTimer);
+        }
+
+        document.body.classList.remove("outside-screen");
+
+        const outsideMode =
+            document.getElementById("outsideMode");
+
+        outsideMode.style.display = "none";
+
+        const quest =
+            document.getElementById("quest");
+
+        quest.classList.remove("outside-active");
+
+        const complete =
+            document.getElementById("complete");
+
+        let completed =
+            Number(localStorage.getItem("walkquestCompleted") || 0);
+
+        let outsideMinutes =
+            Number(localStorage.getItem("walkquestMinutes") || 0);
+
+        completed += 1;
+        outsideMinutes += currentQuestDuration;
+
+        localStorage.setItem(
+            "walkquestCompleted",
+            completed
+        );
+
+        localStorage.setItem(
+            "walkquestMinutes",
+            outsideMinutes
+        );
+
+        complete.innerHTML = `
+            <div class="complete-icon">🌿</div>
+
+            <div class="complete-title">
+                Quest Complete.
+            </div>
+
+            <div class="complete-text">
+                You spent ${currentQuestDuration} minutes outside.
+            </div>
+
+            <div class="reflection-title">
+                How did you feel?
+            </div>
+
+            <div class="mood-buttons">
+
+                <button onclick="saveMood('😊 Refreshed')">
+                    😊 Refreshed
+                </button>
+
+                <button onclick="saveMood('😌 Calmer')">
+                    😌 Calmer
+                </button>
+
+                <button onclick="saveMood('⚡ Energized')">
+                    ⚡ Energized
+                </button>
+
+            </div>
+
+            <div class="stats">
+                🌿 ${completed} quests
+                &nbsp;·&nbsp;
+                ⏱ ${outsideMinutes} minutes outside
+            </div>
+        `;
+    }
+
+
+    function saveMood(mood) {
+
+        const complete =
+            document.getElementById("complete");
+
+        const completed =
+            Number(localStorage.getItem("walkquestCompleted") || 0);
+
+        const outsideMinutes =
+            Number(localStorage.getItem("walkquestMinutes") || 0);
+
+        complete.innerHTML = `
+            <div class="complete-icon">
+                🌿
+            </div>
+
+            <div class="complete-title">
+                ${mood}
+            </div>
+
+            <div class="complete-text">
+                Nice. Another few minutes away from the screen.
+            </div>
+
+            <div class="stats">
+                🌿 ${completed} quests
+                &nbsp;·&nbsp;
+                ⏱ ${outsideMinutes} minutes outside
+            </div>
+
+            <button
+                class="finish-button"
+                onclick="location.reload()">
+                🔄 NEW QUEST
+            </button>
+        `;
+    }
+
+
+    function escapeHtml(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
+
+    }
+
+
+    loadProgress();
+
+</script>
+
+</body>
+</html>
