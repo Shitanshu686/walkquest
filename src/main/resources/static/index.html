@@ -1173,9 +1173,14 @@
                 ⏱ ${outsideMinutes} minutes outside
             </div>
         `;
+
+        complete.style.display = "block";
+
+        complete.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
     }
-
-
     function saveMood(mood) {
 
         const complete =
