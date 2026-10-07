@@ -67,6 +67,19 @@
             line-height: 1.5;
         }
 
+        .ai-badge {
+            display: inline-flex;
+            margin-top: 18px;
+            padding: 7px 12px;
+            border: 1px solid #294b38;
+            border-radius: 999px;
+            background: rgba(10, 27, 17, 0.55);
+            color: #789d84;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+        }
+
         .progress-card {
             display: flex;
             align-items: center;
@@ -498,6 +511,173 @@
                 font-size: 25px;
             }
         }
+
+
+        /* ===== WALKQUEST UI POLISH ===== */
+
+        .hero {
+            position: relative;
+            margin-bottom: 38px;
+        }
+
+        .hero::before {
+            content: 'GO OUTSIDE • TOUCH GRASS • COME BACK BETTER';
+            display: block;
+            margin-bottom: 14px;
+            color: #5f806b;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2.4px;
+        }
+
+        .logo {
+            box-shadow: 0 8px 30px rgba(121, 217, 154, 0.08);
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+            border-color: #4e8b63;
+        }
+
+        h1 {
+            text-shadow: 0 0 45px rgba(121, 217, 154, 0.10);
+        }
+
+        .tagline {
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .progress-card {
+            backdrop-filter: blur(14px);
+            box-shadow: 0 14px 45px rgba(0, 0, 0, 0.18);
+        }
+
+        .panel {
+            backdrop-filter: blur(14px);
+            box-shadow:
+                0 24px 80px rgba(0, 0, 0, 0.35),
+                0 0 0 1px rgba(121, 217, 154, 0.025);
+        }
+
+        textarea {
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        textarea:hover {
+            border-color: #416b50;
+            background: #0b1810;
+        }
+
+        .example {
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .example:hover {
+            transform: translateY(-2px);
+            background: #102519;
+        }
+
+        button.generate {
+            box-shadow: 0 12px 28px rgba(121, 217, 154, 0.10);
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        button.generate:hover {
+            box-shadow: 0 16px 34px rgba(121, 217, 154, 0.16);
+        }
+
+        .quest {
+            box-shadow: 0 20px 55px rgba(0, 0, 0, 0.24);
+        }
+
+        .quest-header {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-header::after {
+            content: '🌿';
+            position: absolute;
+            right: 24px;
+            top: 18px;
+            font-size: 46px;
+            opacity: 0.10;
+            transform: rotate(12deg);
+        }
+
+        .activity {
+            transition: padding-left 0.2s ease, background 0.2s ease;
+        }
+
+        .activity:hover {
+            padding-left: 6px;
+        }
+
+        .number {
+            box-shadow: 0 0 0 5px rgba(121, 217, 154, 0.035);
+        }
+
+        .escape {
+            box-shadow: 0 12px 30px rgba(121, 217, 154, 0.08);
+        }
+
+        .start-quest,
+        .finish-button,
+        .outside-back,
+        .mood-buttons button {
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .start-quest:hover,
+        .finish-button:hover,
+        .outside-back:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            opacity: 0.85;
+        }
+
+        @media (max-width: 600px) {
+
+            .hero::before {
+                font-size: 8px;
+                letter-spacing: 1.5px;
+            }
+
+            .hero {
+                margin-bottom: 28px;
+            }
+
+            .progress-card {
+                backdrop-filter: none;
+            }
+
+            .panel {
+                backdrop-filter: none;
+            }
+
+            .quest-header::after {
+                right: 16px;
+                font-size: 36px;
+            }
+        }
+
     </style>
 </head>
 
@@ -518,6 +698,10 @@
         <p class="tagline">
             AI that plans your escape from the screen.
         </p>
+
+        <div class="ai-badge">
+            ⚡ LOCAL AI&nbsp;&nbsp;·&nbsp;&nbsp;GEMMA 3:1B&nbsp;&nbsp;·&nbsp;&nbsp;OLLAMA
+        </div>
 
     </section>
 
