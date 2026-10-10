@@ -6,14 +6,24 @@ public class QuestResponse {
 
     private String title;
     private int duration;
+    private String category;
+    private String difficulty;
     private List<String> activities;
 
     public QuestResponse() {
     }
 
-    public QuestResponse(String title, int duration, List<String> activities) {
+    public QuestResponse(
+            String title,
+            int duration,
+            String category,
+            String difficulty,
+            List<String> activities
+    ) {
         this.title = title;
         this.duration = duration;
+        this.category = category;
+        this.difficulty = difficulty;
         this.activities = activities;
     }
 
@@ -31,6 +41,22 @@ public class QuestResponse {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
     }
 
     public List<String> getActivities() {

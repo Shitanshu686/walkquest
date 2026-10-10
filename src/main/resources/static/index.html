@@ -243,6 +243,26 @@
             font-size: 14px;
         }
 
+        .quest-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quest-meta span {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border: 1px solid #31583f;
+            border-radius: 999px;
+            background: #12291b;
+            color: #b9e8c6;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
         .activities {
             padding: 10px 24px 24px;
         }
@@ -785,6 +805,11 @@
                     ⏱ 20 minutes
                 </div>
 
+                <div class="quest-meta" id="questMeta">
+                    <span id="questCategory">🌿 NATURE</span>
+                    <span id="questDifficulty">⚡ EASY</span>
+                </div>
+
             </div>
 
 
@@ -968,6 +993,12 @@
 
             document.getElementById("duration")
                 .textContent = "⏱ " + data.duration + " minutes";
+
+            document.getElementById("questCategory")
+                .textContent = "🌿 " + (data.category || "NATURE");
+
+            document.getElementById("questDifficulty")
+                .textContent = "⚡ " + (data.difficulty || "EASY");
 
 
             const activities =
