@@ -31,6 +31,11 @@ public class QuestService {
 
     public QuestResponse generateQuest(String userRequest) {
 
+        // Use deterministic, natural Hinglish instead of unreliable AI translations.
+        if (!isEnglishRequest(userRequest)) {
+            return fallbackQuest(userRequest);
+        }
+
         String prompt = """
                 You are WalkQuest AI.
 
@@ -260,7 +265,24 @@ public class QuestService {
                 "khaas-khaas dekho",
                 "aage ko saaf karo",
                 "khainch dinriye",
-                "chirping their hearts out"
+                "chirping their hearts out",
+                "har shuruon",
+                "sahi andar",
+                "saare haza",
+                "fresh air lo, okay",
+                "simple things note karo",
+                "agar thoda chahti ho",
+                "aur chahenge chahte ho",
+                "minutes long walk",
+                "agar aur chahenge",
+                "thoda chahti ho",
+                "aas-paas dekhke step karo",
+                "thoda khushi banegi",
+                "kahi se khawapas",
+                "har dilon ki paisa",
+                "chalo, 2 minutes long walk",
+                "khawapas pe andar walk",
+                "simple morning walk"
         };
 
         for (String phrase : suspiciousPhrases) {
@@ -313,9 +335,17 @@ public class QuestService {
         return true;
     }
 
+    private List<Integer> splitDuration(int duration) {
+        int safeDuration = Math.max(3, duration);
+        int base = safeDuration / 3;
+        int remainder = safeDuration % 3;
+        return List.of(base + (remainder > 0 ? 1 : 0), base + (remainder > 1 ? 1 : 0), base);
+    }
+
     private QuestResponse fallbackQuest(String userRequest) {
 
         int duration = extractDuration(userRequest);
+        List<Integer> slots = splitDuration(duration);
 
         String category = detectRequestedCategory(userRequest);
 
@@ -328,49 +358,49 @@ public class QuestService {
                 case "GARDENING" -> new QuestResponse(
                         "Garden Reset", duration, "GARDENING", "EASY",
                         List.of(
-                                "Observe three different leaf shapes in the garden.",
-                                "Water garden plants gently if it is safe and permitted.",
-                                "Sit in the garden for five minutes and enjoy the fresh air."
+                                "Spend %d minutes observing three different leaf shapes in the garden.".formatted(slots.get(0)),
+                                "Spend %d minutes watering garden plants if it is safe and permitted.".formatted(slots.get(1)),
+                                "Sit in the garden for %d minutes and enjoy the fresh air.".formatted(slots.get(2))
                         )
                 );
                 case "WALK" -> new QuestResponse(
                         "Fresh Air Walk", duration, "WALK", "EASY",
                         List.of(
-                                "Walk at a comfortable pace for a few minutes.",
-                                "Notice three interesting things around you as you walk.",
-                                "Pause in a safe outdoor spot and enjoy the fresh air."
+                                "Walk at a comfortable pace for %d minutes.".formatted(slots.get(0)),
+                                "Notice three interesting things around you for %d minutes.".formatted(slots.get(1)),
+                                "Pause in a safe outdoor spot and enjoy the fresh air for %d minutes.".formatted(slots.get(2))
                         )
                 );
                 case "MINDFULNESS" -> new QuestResponse(
                         "Outdoor Reset", duration, "MINDFULNESS", "EASY",
                         List.of(
-                                "Walk slowly for a few minutes and breathe comfortably.",
-                                "Sit somewhere safe and listen to the sounds around you.",
-                                "Spend five quiet minutes enjoying the fresh air."
+                                "Walk slowly for %d minutes and breathe comfortably.".formatted(slots.get(0)),
+                                "Sit somewhere safe for %d minutes and listen to the sounds around you.".formatted(slots.get(1)),
+                                "Spend %d quiet minutes enjoying the fresh air.".formatted(slots.get(2))
                         )
                 );
                 case "OBSERVATION" -> new QuestResponse(
                         "Notice More", duration, "OBSERVATION", "EASY",
                         List.of(
-                                "Notice three interesting details in your surroundings.",
-                                "Listen carefully and identify two different natural sounds.",
-                                "Sit somewhere safe and observe your surroundings for five minutes."
+                                "Spend %d minutes noticing interesting details around you.".formatted(slots.get(0)),
+                                "Spend %d minutes identifying different natural sounds.".formatted(slots.get(1)),
+                                "Sit somewhere safe and observe your surroundings for %d minutes.".formatted(slots.get(2))
                         )
                 );
                 case "EXPLORATION" -> new QuestResponse(
                         "Outdoor Explore", duration, "EXPLORATION", "EASY",
                         List.of(
-                                "Explore a familiar outdoor area at a comfortable pace.",
-                                "Look for three interesting details you have not noticed before.",
-                                "Pause at a safe spot and take in the surroundings."
+                                "Explore a familiar outdoor area for %d minutes at a comfortable pace.".formatted(slots.get(0)),
+                                "Spend %d minutes looking for interesting details you have not noticed before.".formatted(slots.get(1)),
+                                "Pause at a safe spot for %d minutes and take in the surroundings.".formatted(slots.get(2))
                         )
                 );
                 default -> new QuestResponse(
                         "Fresh Air Quest", duration, "NATURE", "EASY",
                         List.of(
-                                "Take a gentle walk and notice the nature around you.",
-                                "Find three interesting things in your surroundings.",
-                                "Sit somewhere safe and enjoy the fresh air for five minutes."
+                                "Take a gentle walk for %d minutes and notice the nature around you.".formatted(slots.get(0)),
+                                "Spend %d minutes finding interesting things in your surroundings.".formatted(slots.get(1)),
+                                "Sit somewhere safe and enjoy the fresh air for %d minutes.".formatted(slots.get(2))
                         )
                 );
             };
@@ -384,9 +414,9 @@ public class QuestService {
                     "GARDENING",
                     "EASY",
                     List.of(
-                            "5 minute plants ko observe karo aur different leaf shapes notice karo.",
-                            "Safe ho to garden ke plants ko thoda paani do.",
-                            "5 minute garden mein baithkar fresh air lo."
+                            "%d minute plants ko observe karo aur different leaf shapes notice karo.".formatted(slots.get(0)),
+                            "%d minute safe ho to garden ke plants ko thoda paani do.".formatted(slots.get(1)),
+                            "%d minute garden mein baithkar fresh air lo.".formatted(slots.get(2))
                     )
             );
 
@@ -396,9 +426,9 @@ public class QuestService {
                     "WALK",
                     "EASY",
                     List.of(
-                            "10 minute comfortable pace par walk karo.",
-                            "Walk karte waqt aas-paas ki 3 interesting cheezein notice karo.",
-                            "5 minute kisi safe outdoor jagah par baithkar fresh air lo."
+                            "%d minute comfortable pace par walk karo.".formatted(slots.get(0)),
+                            "%d minute walk karte waqt aas-paas ki 3 interesting cheezein notice karo.".formatted(slots.get(1)),
+                            "%d minute kisi safe outdoor jagah par baithkar fresh air lo.".formatted(slots.get(2))
                     )
             );
 
@@ -408,9 +438,9 @@ public class QuestService {
                     "MINDFULNESS",
                     "EASY",
                     List.of(
-                            "5 minute slowly walk karo aur deep breaths lo.",
-                            "Kisi safe outdoor spot par baithkar surroundings ki sounds suno.",
-                            "5 minute shaant hokar fresh air enjoy karo."
+                            "%d minute slowly walk karo aur deep breaths lo.".formatted(slots.get(0)),
+                            "%d minute kisi safe outdoor spot par baithkar surroundings ki sounds suno.".formatted(slots.get(1)),
+                            "%d minute shaant hokar fresh air enjoy karo.".formatted(slots.get(2))
                     )
             );
 
@@ -421,8 +451,8 @@ public class QuestService {
                     "EASY",
                     List.of(
                             "Aas-paas ki 3 interesting cheezein observe karo.",
-                            "2 different natural sounds identify karo.",
-                            "Kisi safe jagah par baithkar 5 minute surroundings dekho."
+                            "%d minute mein 2 different natural sounds identify karo.".formatted(slots.get(1)),
+                            "Kisi safe jagah par baithkar %d minute surroundings dekho.".formatted(slots.get(2))
                     )
             );
 
@@ -433,8 +463,8 @@ public class QuestService {
                     "EASY",
                     List.of(
                             "Safe outdoor area mein slowly walk karo.",
-                            "Raste mein 3 interesting details notice karo.",
-                            "5 minute kisi safe spot par rukkar surroundings explore karo."
+                            "%d minute raste mein 3 interesting details notice karo.".formatted(slots.get(1)),
+                            "%d minute kisi safe spot par rukkar surroundings explore karo.".formatted(slots.get(2))
                     )
             );
 
@@ -444,9 +474,9 @@ public class QuestService {
                     "NATURE",
                     "EASY",
                     List.of(
-                            "10 minute halka walk karo aur aas-paas ki cheezein notice karo.",
-                            "Kisi safe outdoor spot par 3 interesting sounds identify karo.",
-                            "5 minute shaant jagah par baithkar fresh air enjoy karo."
+                            "%d minute halka walk karo aur aas-paas ki cheezein notice karo.".formatted(slots.get(0)),
+                            "%d minute kisi safe outdoor spot par 3 interesting sounds identify karo.".formatted(slots.get(1)),
+                            "%d minute shaant jagah par baithkar fresh air enjoy karo.".formatted(slots.get(2))
                     )
             );
         };
